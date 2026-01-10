@@ -1,66 +1,61 @@
 package main
 
 import (
-	"net/http"
+	"log"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-type note struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Date    string `json:"date"`
-}
-
-func getNotes(c *gin.Context) {
-	c.JSON(http.StatusOK, notes)
-}
-
-func postNote(c *gin.Context) {
-	var newNote note
-
-	// Call BindJSON to bind the received JSON to
-	// newNote.
-	if err := c.BindJSON(&newNote); err != nil {
-		return
-	}
-
-	// Add the new note to the slice.
-	notes = append(notes, newNote)
-	c.IndentedJSON(http.StatusCreated, newNote)
-}
-
-func getNoteByID(c *gin.Context) {
-	id := c.Param("id")
-
-	// Loop over the list of notes, looking for
-	// an note whose ID value matches the parameter.
-	for _, a := range notes {
-		if a.ID == id {
-			c.JSON(http.StatusOK, a)
-			return
-		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "note not found"})
-}
-
-var notes = []note{
-	{ID: "1", Title: "Grocery List", Content: "Buy milk, eggs, bread, and vegetables for the week", Date: "2025-01-09"},
-	{ID: "2", Title: "Project Deadline", Content: "Complete API documentation and submit pull request by Friday", Date: "2025-01-05"},
-	{ID: "3", Title: "Book Recommendations", Content: "The Pragmatic Programmer, Clean Code, Designing Data-Intensive Applications", Date: "2025-01-03"},
-}
-
 func main() {
+	// Load configuration
+	config, err := LoadConfig()
+	if err != nil {
+		log.Fatal("Configuration failed:", err)
+	}
+
+	// Store config globally for handlers
+	appConfig = config
+
+	// Initialize connections
+	if err := initMongoDB(config); err != nil {
+		log.Fatal("MongoDB connection failed:", err)
+	}
+	defer mongoClient.Disconnect(ctx)
+
+	if err := initRedis(config); err != nil {
+		log.Fatal("Redis connection failed:", err)
+	}
+	defer redisClient.Close()
+
+	// Setup Gin router
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	router.GET("/notes", getNotes)
-	router.GET("/note/:id", getNoteByID)
-	router.POST("/note", postNote)
-	router.Run() // listens on 0.0.0.0:8080 by default
+
+	// CORS configuration
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     config.AllowedOrigins,
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
+	log.Printf("✓ CORS enabled for origins: %v", config.AllowedOrigins)
+
+	// Health check
+	router.GET("/health", healthCheck)
+
+	// API routes
+	api := router.Group("/api/v1")
+	{
+		api.POST("/notes", postNote)
+		api.GET("/notes", getNotes)
+	}
+
+	log.Printf("🚀 Server starting on port %s", config.Port)
+	if err := router.Run(":" + config.Port); err != nil {
+		log.Fatal("Server failed to start:", err)
+	}
 }
