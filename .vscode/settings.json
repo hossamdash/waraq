@@ -5,6 +5,7 @@
         "godotenv",
         "katib",
         "mongodbatlas",
+        "rediscloud",
         "tfstate",
         "tfvars",
         "Waraq",
