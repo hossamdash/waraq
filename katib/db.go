@@ -43,6 +43,7 @@ func initMongoDB(config *Config) error {
 func initRedis(config *Config) error {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:     config.RedisAddr,
+		Username: config.RedisUsername,
 		Password: config.RedisPassword,
 		DB:       config.RedisDB,
 	})

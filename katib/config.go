@@ -17,6 +17,7 @@ type Config struct {
 
 	// Redis configuration
 	RedisAddr               string
+	RedisUsername           string
 	RedisPassword           string
 	RedisDB                 int
 	RedisCacheExpiration    time.Duration
@@ -49,6 +50,9 @@ func LoadConfig() (*Config, error) {
 	if config.RedisAddr == "" {
 		return nil, fmt.Errorf("REDIS_ADDR environment variable not set")
 	}
+
+	// Redis username (optional)
+	config.RedisUsername = os.Getenv("REDIS_USERNAME")
 
 	// Redis password (optional)
 	config.RedisPassword = os.Getenv("REDIS_PASSWORD")
