@@ -11,3 +11,9 @@ menu:
     - name: Add Note
       url: /add-note/
       weight: 20
+
+security:
+  enableInlineShortcodes: false
+  funcs:
+    getenv:
+      - "^HUGO_"

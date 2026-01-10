@@ -1,0 +1,108 @@
+{{- define "main" }}
+<style>
+    .note-item {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        background: var(--entry);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+    }
+
+    .note-item h3 {
+        margin: 0 0 0.75rem 0;
+    }
+
+    .note-item p {
+        color: var(--content);
+        margin: 0 0 0.75rem 0;
+        white-space: pre-wrap;
+    }
+</style>
+
+<header class="page-header">
+    <h1>All Notes</h1>
+    <div class="post-description">Your saved notes from the database</div>
+</header>
+
+<div id="notes-container" style="margin-top: 1.5rem;">
+    <small style="color: var(--secondary);">⏳ Loading notes...</small>
+</div>
+
+<script>
+    const API_URL = '{{ getenv "HUGO_PARAMS_API_URL" }}';
+
+    async function loadNotes() {
+        const container = document.getElementById('notes-container');
+
+        try {
+            const response = await fetch(`${API_URL}/notes`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const notes = await response.json();
+            const cacheStatus = response.headers.get('X-Cache');
+
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2.5rem; background: var(--code-bg); border-radius: var(--radius);">
+                        <p style="margin-bottom: 1rem;">📝 No notes yet</p>
+                        <a href="/add-note/" class="button"><span class="button-inner">Create your first note</span></a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            if (cacheStatus) {
+                html += `<p style="text-align: right; margin-bottom: 0.75rem;"><small style="color: var(--secondary);">Cache: ${cacheStatus}</small></p>`;
+            }
+
+            html += '<ul class="archive-posts" style="list-style: none; padding: 0;">';
+
+            notes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            notes.forEach(note => {
+                const date = new Date(note.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                html += `
+                    <li class="note-item">
+                        <h3>${escapeHtml(note.title)}</h3>
+                        <p>${escapeHtml(note.content)}</p>
+                        <small style="color: var(--secondary);">📅 ${date}</small>
+                    </li>
+                `;
+            });
+
+            html += '</ul>';
+            container.innerHTML = html;
+
+        } catch (error) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 2.5rem; background: var(--code-bg); border-radius: var(--radius); border: 1px solid var(--border);">
+                    <p style="margin-bottom: 0.5rem;">❌ Error loading notes</p>
+                    <p style="margin-bottom: 0.5rem;">${error.message}</p>
+                    <small style="color: var(--secondary);">Make sure the backend server is running on ${API_URL}</small>
+                </div>
+            `;
+        }
+    }
+
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    loadNotes();
+</script>
+{{- end }}

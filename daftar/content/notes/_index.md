@@ -1,4 +1,4 @@
 ---
 title: "Notes"
-layout: "archives"
+layout: "notes"
 ---
