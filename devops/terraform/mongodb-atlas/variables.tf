@@ -10,25 +10,12 @@ variable "mongodbatlas_client_secret" {
   sensitive   = true
 }
 
-variable "mongdbatlas_email" {
-  description = "MongoDB Atlas account email address"
+variable "mongodbatlas_cluster_region" {
+  description = "Region for MongoDB Atlas cluster"
   type        = string
 }
 
-variable "mongodbatlas_cluster_region_aws" {
-  description = "AWS region for MongoDB Atlas cluster"
+variable "mongodbatlas_cloud_provider" {
+  description = "Cloud provider for MongoDB Atlas (AWS, GCP, or Azure)"
   type        = string
 }
-
-
-# variable "mongodb_db_password" {
-#   description = "MongoDB database user password"
-#   type        = string
-#   sensitive   = true
-# }
-
-# variable "mongodb_db_username" {
-#   description = "MongoDB database username"
-#   type        = string
-#   sensitive   = true
-# }
