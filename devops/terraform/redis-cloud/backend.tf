@@ -5,8 +5,9 @@ terraform {
     use_lockfile = true
 
     profile = "localstack"
+    region  = "eu-west-1"
+
     # LocalStack compatibility flags
-    region    = "eu-west-1"
     endpoints = { s3 = "http://localhost:4566" }
 
     skip_credentials_validation = true
