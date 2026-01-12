@@ -1,13 +1,6 @@
-variable "mongodbatlas_client_id" {
-  description = "MongoDB Atlas API client ID"
+variable "region" {
+  description = "AWS region for Secrets Manager"
   type        = string
-  sensitive   = true
-}
-
-variable "mongodbatlas_client_secret" {
-  description = "MongoDB Atlas API client secret"
-  type        = string
-  sensitive   = true
 }
 
 variable "mongodbatlas_cluster_region" {

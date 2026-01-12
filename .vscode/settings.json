@@ -4,6 +4,7 @@
         "daftar",
         "godotenv",
         "katib",
+        "localstack",
         "mongodbatlas",
         "rediscloud",
         "tfstate",

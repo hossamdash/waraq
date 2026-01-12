@@ -1,6 +1,14 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
+provider "registry.terraform.io/hashicorp/aws" {
+  version     = "6.28.0"
+  constraints = "~> 6.0"
+  hashes = [
+    "h1:wzZdGs0FFmNqIgPyo9tKnGKJ37BGNSgwRrEXayL29+0=",
+  ]
+}
+
 provider "registry.terraform.io/redislabs/rediscloud" {
   version     = "2.10.0"
   constraints = "~> 2.0"

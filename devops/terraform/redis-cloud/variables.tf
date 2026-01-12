@@ -1,13 +1,6 @@
-variable "rediscloud_api_key" {
-  description = "Redis Cloud API key"
+variable "region" {
+  description = "AWS region for Secrets Manager"
   type        = string
-  sensitive   = true
-}
-
-variable "rediscloud_secret_key" {
-  description = "Redis Cloud secret key"
-  type        = string
-  sensitive   = true
 }
 
 variable "redis_cloud_region" {
