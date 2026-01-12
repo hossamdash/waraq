@@ -1,7 +1,8 @@
 terraform {
   backend "s3" {
-    bucket = "waraq-terraform-state-eu-west-1"
-    key    = "mongodb-atlas"
+    bucket       = "waraq-terraform-state-eu-west-1"
+    key          = "mongodb-atlas"
+    use_lockfile = true
 
     profile = "localstack"
     region  = "eu-west-1"

@@ -1,7 +1,8 @@
 terraform {
   backend "s3" {
-    bucket = "waraq-terraform-state-eu-west-1"
-    key    = "redis-cloud"
+    bucket       = "waraq-terraform-state-eu-west-1"
+    key          = "redis-cloud"
+    use_lockfile = true
 
     profile = "localstack"
     # LocalStack compatibility flags
