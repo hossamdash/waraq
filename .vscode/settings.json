@@ -7,8 +7,10 @@
         "localstack",
         "mongodbatlas",
         "rediscloud",
+        "secretstore",
         "tfstate",
         "tfvars",
+        "traefik",
         "Waraq",
         "writeconcern"
     ]

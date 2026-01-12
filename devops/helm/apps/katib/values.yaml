@@ -1,0 +1,69 @@
+nameOverride: "katib"
+deployment:
+  image:
+    repository: golang
+    # rely on chart appVersion for tag
+    tag: "1.21-alpine"
+
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  # secret volume for environment variables, instead of relying on os env which might be insecure
+  # relies on libraries that can read .env files, like python-dotenv for Python apps
+  # this assumes a contract between dockerfile and kubernetes deployment that the working directory is /app
+
+  volumes:
+    - name: env-file
+      secret:
+        # don't forget to create this secret in the vault namespace simulating aws secret manager
+        secretName: katib
+        optional: false
+        items:
+          - key: .env
+            path: .env
+
+  volumeMounts:
+    - name: env-file
+      mountPath: "/app/.env"
+      subPath: .env
+      readOnly: true
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  containerCommand:
+    - sleep
+    - "3600"
+  # TODO: enable this
+  livenessProbeEnabled: false
+  livenessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 30
+    failureThreshold: 3
+    httpGet:
+      path: /health
+      port: http
+
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations: {}
+  hosts:
+    - host: api.daftar.dev
+      paths:
+        - path: /
+          pathType: Prefix
+
+secretStore:
+  kind: ClusterSecretStore
+  name: k8s-secrets-vault-ns
