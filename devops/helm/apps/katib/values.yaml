@@ -1,9 +1,9 @@
 nameOverride: "katib"
 deployment:
   image:
-    repository: golang
+    repository: hossamdash/katib
     # rely on chart appVersion for tag
-    tag: "1.21-alpine"
+    tag: "v1.0"
 
   securityContext:
     capabilities:
