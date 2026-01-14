@@ -200,6 +200,8 @@ Detailed instructions are in [daftar/README.md](daftar/README.md), but in brief:
 
    ```bash
    cd ./daftar
+   # initialize theme submodule
+   git submodule update --init --recursive
    cp .env.example .env
    # Edit .env with your API URL
    ```
