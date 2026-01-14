@@ -34,6 +34,11 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/waraq
 # Redis configuration (REQUIRED)
 REDIS_ADDR=localhost:6379
 REDIS_DB=0
+
+# Redis username (optional, leave empty if not using ACL)
+REDIS_USERNAME=
+
+# Redis password (optional, leave empty for local development)
 REDIS_PASSWORD=
 
 # Redis cache expiration in minutes (REQUIRED)
@@ -55,7 +60,7 @@ See [`.env.example`](.env.example) for a template.
 The `Config` struct in [`config.go`](config.go) contains:
 
 - **MongoDB**: Connection URI
-- **Redis**: Address, password, DB, cache expiration
+- **Redis**: Address, username, password, DB, cache expiration
 - **Server**: Port, Gin mode
 - **CORS**: Allowed origins list
 
