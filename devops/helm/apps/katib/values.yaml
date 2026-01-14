@@ -54,6 +54,9 @@ deployment:
       path: /health
       port: http
 
+service:
+  port: 8080
+
 ingress:
   enabled: true
   className: "traefik"
