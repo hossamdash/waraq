@@ -6,7 +6,11 @@ sudo systemctl start k3s.service
 # Start LocalStack
 localstack start --detached
 
-# Create S3 state bucket
+# Wait for LocalStack to be fully up and running
+sleep 5
+
+# Create terraform S3 state bucket each time as localstack free version does not support persistence
+
 PROFILE="localstack"
 REGION="eu-west-1"
 BUCKET="waraq-terraform-state-$REGION"
