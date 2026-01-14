@@ -53,6 +53,7 @@ Create accounts and obtain credentials from:
   - Navigate to Organization Settings → Access Manager → API Keys
   - Create an API key with Project Owner permissions
   - Note down the Client ID and Client Secret
+  - Add your IP address to the Project Network Access whitelist (NAT IP if you're using one)
 
 - **Redis Cloud**: [Sign up here](https://redis.com/try-free/)
   - Navigate to Account Settings → API Keys
