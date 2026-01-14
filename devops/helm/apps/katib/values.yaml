@@ -41,11 +41,7 @@ deployment:
       cpu: 100m
       memory: 128Mi
 
-  containerCommand:
-    - sleep
-    - "3600"
-  # TODO: enable this
-  livenessProbeEnabled: false
+  livenessProbeEnabled: true
   livenessProbe:
     initialDelaySeconds: 15
     periodSeconds: 30
