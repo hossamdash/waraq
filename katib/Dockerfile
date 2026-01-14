@@ -4,7 +4,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -o katib main.go
+RUN CGO_ENABLED=0 go build -o katib .
 
 FROM alpine:3.23
 RUN apk --no-cache add ca-certificates
