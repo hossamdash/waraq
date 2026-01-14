@@ -30,8 +30,15 @@ func main() {
 	defer redisClient.Close()
 
 	// Setup Gin router
-	router := gin.Default()
+	router := gin.New()
 	router.SetTrustedProxies(nil)
+
+	// Custom logger to skip health check endpoint
+	router.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/health"},
+	}))
+	// Recovery middleware recovers from any panics and writes a 500 if there was one. it's included by default in gin.Default()
+	router.Use(gin.Recovery())
 
 	// CORS configuration
 	router.Use(cors.New(cors.Config{
