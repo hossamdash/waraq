@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag for the Docker image (e.g., v1.0.0 or git SHA)"
+        description: "Tag for the Docker image (e.g., v1.0 or git SHA)"
         required: true
         type: string
 
