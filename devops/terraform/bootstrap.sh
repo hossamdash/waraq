@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# Start k3s service
-systemctl start k3s.service
+# Start k3s service (lightweight Kubernetes)
+sudo systemctl start k3s.service
 
 # Start LocalStack
 localstack start --detached
