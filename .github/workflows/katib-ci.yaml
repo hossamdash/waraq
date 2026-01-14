@@ -1,9 +1,16 @@
-name: katib ci build & push for ${{ github.ref_name }}
+name: katib ci build & push
+run-name: katib ci build & push for ${{ github.ref_name }}
 
 on:
   push:
     tags:
       - "katib-v*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag for the Docker image (e.g., v1.0.0 or git SHA)"
+        required: true
+        type: string
 
 jobs:
   docker-build-push:
@@ -13,11 +20,17 @@ jobs:
         working-directory: ./katib
     steps:
       - uses: actions/checkout@v6
-      - name: Extract version from tag
+      - name: Extract version from reference
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#katib-}" >> $GITHUB_OUTPUT
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.tag }}"
+          else
+            VERSION=$(echo "${{ github.ref_name }}" | sed 's/^katib-//')
+          fi
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
       - name: Login to Docker Hub
-        # NOtE: we can harden this by pinning to the commit SHA (5e57cd118135c172c3672efd75eb46360885c0ef)
+        # NOTE: we can harden this by pinning to the commit SHA (5e57cd118135c172c3672efd75eb46360885c0ef)
         # to prevent supply chain attacks
         uses: docker/login-action@v3
         with:
