@@ -30,6 +30,7 @@ func main() {
 	defer redisClient.Close()
 
 	// Setup Gin router
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.SetTrustedProxies(nil)
 

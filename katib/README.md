@@ -207,7 +207,7 @@ curl http://localhost:8080/health
 ## Production Deployment
 
 1. **Set environment variables** on your hosting platform
-2. **Set `GIN_MODE=release`** in production
+2. **use gin.setMode(gin.releaseMode)** for production
 3. **Configure CORS origins** to match your frontend domains
 4. **Adjust cache expiration** based on your needs
 5. **Use TLS/HTTPS** for all connections
