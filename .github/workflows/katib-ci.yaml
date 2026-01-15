@@ -1,5 +1,5 @@
-name: katib ci build & push
-run-name: katib ci build & push for ${{ github.ref_name }}
+name: katib ci build & push & deploy
+run-name: katib ci build & push & deploy for ${{ github.ref_name }}
 
 on:
   push:
