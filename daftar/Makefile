@@ -3,10 +3,14 @@
 help: ## Show this help message
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+	@echo "Note: Hugo doesn't support reading .env files directly."
+	@echo "Export environment variables before running commands:"
+	@echo "  export \$$(cat .env | xargs)"
 
 PORT ?= 1313
 BASE_URL ?= http://localhost:$(PORT)/
-
+HUGO_PARAMS_API_URL ?= http://localhost:8081/api/v1
 dev: ## Start Hugo development server with drafts
 	hugo server -D -p $(PORT) -b $(BASE_URL)
 

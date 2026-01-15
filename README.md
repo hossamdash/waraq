@@ -210,7 +210,16 @@ Detailed instructions are in [daftar/README.md](daftar/README.md), but in brief:
 2. Build and deploy:
 
    ```bash
-   hugo --gc --minify
+   # Hugo doesn't support reading from .env files directly
+   # Export environment variables before running make commands
+   export $(cat .env | xargs)
+   
+   # Build the site
+   make build
+   
+   # Or pass variables as arguments to make
+   make build BASE_URL=http://daftar.dev.s3-website.localhost.localstack.cloud:4566 HUGO_PARAMS_API_URL=http://api.daftar.dev/api/v1
+   
    # Upload public/ directory contents to S3 bucket
    aws --profile localstack s3 sync public/ s3://daftar.dev/
    ```
