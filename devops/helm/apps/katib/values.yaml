@@ -2,7 +2,6 @@ nameOverride: "katib"
 deployment:
   image:
     repository: hossamdash/katib
-    # rely on chart appVersion for tag
     tag: "v1.0"
 
   securityContext:

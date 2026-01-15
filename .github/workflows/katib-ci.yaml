@@ -15,6 +15,8 @@ on:
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.VERSION }}
     defaults:
       run:
         working-directory: ./katib
@@ -50,3 +52,26 @@ jobs:
           # on aws we would use a specific tag in the ecr repo for this like `buildcache`
           cache-from: type=gha
           cache-to: type=gha,mode=max
+  deploy:
+    # required to allow pushing commits back to the repo
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set image tag in values.yaml
+        env:
+          VERSION: ${{ needs.docker-build-push.outputs.version }}
+        run: |
+          echo "version is $VERSION"
+          yq e ".deployment.image.tag = \"$VERSION\"" -i "devops/helm/apps/katib/values.yaml"
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add devops/helm/apps/katib/values.yaml
+          git commit -m "cd: update katib image tag to ${{ needs.docker-build-push.outputs.version }}"
+          git push
