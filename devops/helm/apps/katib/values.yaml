@@ -2,8 +2,7 @@ nameOverride: "katib"
 deployment:
   image:
     repository: hossamdash/katib
-    tag: "v1.0"
-
+    tag: "v1.1"
   securityContext:
     capabilities:
       drop:
@@ -11,11 +10,9 @@ deployment:
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-
   # secret volume for environment variables, instead of relying on os env which might be insecure
   # relies on libraries that can read .env files, like python-dotenv for Python apps
   # this assumes a contract between dockerfile and kubernetes deployment that the working directory is /app
-
   volumes:
     - name: env-file
       secret:
@@ -25,13 +22,11 @@ deployment:
         items:
           - key: .env
             path: .env
-
   volumeMounts:
     - name: env-file
       mountPath: "/app/.env"
       subPath: .env
       readOnly: true
-
   resources:
     limits:
       cpu: 100m
@@ -39,7 +34,6 @@ deployment:
     requests:
       cpu: 100m
       memory: 128Mi
-
   livenessProbeEnabled: true
   livenessProbe:
     initialDelaySeconds: 15
@@ -48,10 +42,8 @@ deployment:
     httpGet:
       path: /health
       port: http
-
 service:
   port: 8080
-
 ingress:
   enabled: true
   className: "traefik"
@@ -61,7 +53,6 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-
 secretStore:
   kind: ClusterSecretStore
   name: k8s-secrets-vault-ns
